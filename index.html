@@ -1352,7 +1352,7 @@ function save(){
     if(error)throw error;
     if(data===null||data===undefined)throw Error('Save returned no revision');
     cloudRevision=Number(data);
-    $('status').textContent='Saved to Supabase';
+    $('status').textContent='';
   }).catch(e=>{saveBlocked=true;$('status').textContent='⚠ Save failed — changes not synced. Export backup before reloading. '+e.message;console.error(e);});
   return queuedSave;
 }
