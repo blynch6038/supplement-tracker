@@ -1337,7 +1337,7 @@ async function read(){
     }
     // Do not call backfillSnapshots on imported historical rows: never invent historical composition.
     ensureStatuses();
-    $('status').textContent=data?'Connected to Supabase':'New account — import your NAS state JSON';
+    $('status').textContent=data?'':'New account — import your NAS state JSON';
     return true;
   }catch(e){ $('status').textContent='⚠ '+e.message;document.body.style.pointerEvents='none';return false; }
 }
