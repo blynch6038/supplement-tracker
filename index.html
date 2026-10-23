@@ -1,0 +1,1476 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0B1220"><title>Daily Supplement Ledger</title><style>
+:root{color-scheme:dark;--bg:#0B1220;--card:#18263C;--line:#314561;--muted:#B8C7DB;--gold:#38BDF8;--teal:#A3E635}*{box-sizing:border-box}body{background:var(--bg);color:#F2F7FF;font-family:system-ui,-apple-system,sans-serif;margin:0}.wrap{max-width:920px;margin:auto;padding:22px 16px 80px}header{margin-bottom:18px}h1{font-family:Georgia,serif;font-size:clamp(28px,5vw,42px);margin:8px 0}h2{font-size:19px;margin:0 0 12px}.muted,small{color:var(--muted)}p{line-height:1.5}.bar,.actions,.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.top{justify-content:space-between}.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}button,input,select{font:inherit;border-radius:8px}button{cursor:pointer;background:#263B59;color:#F2F7FF;border:1px solid #577399;padding:9px 12px}button.primary{background:var(--gold);color:#061624;border-color:var(--gold);font-weight:700}input[type=date],input[type=number],input[type=text],select{color:#fff;background:#101D30;border:1px solid #577399;padding:8px}input[type=number]{width:76px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:10px}.supp{border:1px solid var(--line);border-radius:12px;padding:12px;background:#1C2D47}.supp.active{border-color:var(--teal)}.supp label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}.supp input[type=checkbox]{width:20px;height:20px;accent-color:#A3E635;margin-top:3px}.supp strong{display:block}.supp .brand{font-size:12px;color:var(--muted);margin-top:2px}.serv{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#223652;padding:12px;border-radius:10px}.stat b{font-size:24px;display:block;color:var(--gold)}details{border-top:1px solid var(--line);padding:11px 0}summary{cursor:pointer;display:flex;justify-content:space-between;gap:12px;align-items:center}summary strong{font-size:14px}.amount{color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}.sources{font-size:12px;color:var(--muted);padding-top:8px;line-height:1.6}.group-title{color:var(--teal);font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin:22px 0 4px}.right{margin-left:auto}.note{font-size:12px;color:var(--muted)}#status{font-size:12px;color:var(--teal)}.hidden{display:none}a{color:var(--gold)}@media(max-width:520px){.stats{grid-template-columns:repeat(3,1fr)}.stat b{font-size:18px}.bar>button{flex:1}.wrap{padding:15px 12px 70px}}
+.import-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.import-grid label{display:block;color:var(--muted);font-size:13px;margin:10px 0 5px}.import-grid input[type=text],.import-grid input[type=file],.import-grid textarea{width:100%;max-width:100%;background:#101D30;color:#F2F7FF;border:1px solid #577399;border-radius:8px;padding:10px}.import-grid textarea{height:200px;resize:vertical}.import-review{border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0}.import-review input,.import-review select{max-width:100%}.import-head{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:8px}.import-nrow{display:grid;grid-template-columns:minmax(120px,3fr) minmax(75px,1fr) minmax(68px,1fr) auto;gap:7px;margin:6px 0}.import-nrow input[type=text],.import-nrow input[type=number],.import-nrow select{width:100%;background:#101D30;color:#fff;border:1px solid #577399;padding:7px}.import-nrow button{padding:6px 9px}@media(max-width:650px){.import-grid{grid-template-columns:1fr}.import-head{grid-template-columns:1fr}.import-nrow{grid-template-columns:1fr 90px 75px auto}}
+</style><style>
+.main-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;position:sticky;top:0;z-index:20;background:#0B1220;padding:10px 0;border-bottom:1px solid #314561}.main-tabs button{min-width:0;padding:12px 5px}.main-tabs button[aria-current=page]{background:#38BDF8;color:#061624;font-weight:700}.view.hidden{display:none!important}.view>.box{margin-top:12px}.fav{float:right;background:transparent;border:0;color:#B8C7DB;font-size:25px;padding:2px 8px}.fav.on{color:#A3E635}#routineName{background:#101D30;border:1px solid #577399;color:white;padding:10px;max-width:100%;flex:1}.routine-item{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid #314561;padding:10px 0;flex-wrap:wrap}.trend-chart svg{width:100%;height:auto;display:block}.trend-chart{overflow-x:auto}.trend-chart .gridline{stroke:#314561;stroke-width:1}.trend-chart .plotline{stroke:#38BDF8;stroke-width:3;fill:none;stroke-linejoin:round}.trend-chart circle{fill:#A3E635}.trend-chart text{fill:#B8C7DB;font-size:11px}.trend-chart .axis{stroke:#8195AF}.trend-table{max-height:180px;overflow-y:auto;margin-top:8px;font-size:13px}.trend-table div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #314561}#analysisFilters button{font-size:12px}.hidden{display:none!important}@media(max-width:540px){.wrap{padding:12px 12px 85px}.box{padding:12px}.main-tabs button{font-size:12px}.supp{padding:10px}.grid{grid-template-columns:1fr!important}.stats{gap:6px}.stat{min-width:0}}
+</style></head><body><div class="wrap"><header><div class="muted" style="letter-spacing:.15em;font-size:12px">DAILY WELLNESS TRACKER</div><h1>Supplement Ledger</h1><p class="muted">Choose what you took, adjust servings, and review your nutrients by type. Daily history securely stored in Supabase.</p><div style="margin-top:10px"><a href="#" id="cloudSignout">Sign out</a></div></header><nav id="mainTabs" class="main-tabs" aria-label="Main navigation"><button type="button" data-tab="today" aria-current="page">✓ Today</button><button type="button" data-tab="analysis">◉ Analysis</button><button type="button" data-tab="history">▥ History</button><button type="button" data-tab="library">▤ Library</button></nav><main id="tabContent"><div id="view-today" class="view"></div><div id="view-analysis" class="view hidden"></div><div id="view-history" class="view hidden"></div><div id="view-library" class="view hidden"></div></main>
+<section class="box" id="dateSection"><div class="top"><label>Log date <input id="date" type="date"></label><span id="status">Loading…</span></div><div class="stats" style="margin-top:14px"><div class="stat"><b id="count">0</b><small>Supplements</small></div><div class="stat"><b id="entries">0</b><small>Nutrients</small></div><div class="stat"><b id="daycount">0</b><small>Logged days</small></div></div></section>
+<section class="box" id="todaySection"><div class="top"><h2>Today's supplements</h2><div class="actions"><button id="allOff">Clear day</button><button id="editLibrary">Edit library</button></div></div><div id="supplements" class="grid"></div><div id="inactiveLogged" class="hidden" style="margin-top:16px"></div></section>
+<section class="box" id="routinePanel"><h2>Saved routines</h2><p class="note">Save today's selections and servings as a reusable routine. Applying a routine replaces the current day's checkoffs after confirmation; historical logs stay unchanged.</p><div class="bar"><input type="text" id="routineName" placeholder="e.g. Training day" aria-label="Routine name"><button class="primary" id="saveRoutine">Save current day as routine</button></div><div id="routineList"></div></section>
+<section class="box" id="analysisSection"><div class="top"><h2>Daily nutrient breakdown</h2><span class="muted" id="totalLabel"></span></div><div id="analysisFilters" class="bar" style="margin-bottom:10px"><button data-group="all" class="primary">All</button><button data-group="Vitamins">Vitamins</button><button data-group="Minerals">Minerals</button><button data-group="amino">Amino acids</button><button data-group="other">Other</button></div><div id="nutrients"></div><p class="note">Values are estimates based on the source file. Protein already contains its constituent amino acids: do not add them to protein. Fiber subtypes are not additional total dietary fiber. Some vitamin/mineral forms have been combined into parent totals while preserving sources.</p></section>
+<section class="box" id="chartPanel"><h2>Intake trends</h2><p class="note">Daily totals from historical nutrient snapshots. Missing days are gaps (not zero intake).</p><div class="bar"><label>Metric <select id="trendMetric"><option value="count">Logged supplements</option><option value="nutrient">Specific nutrient</option></select></label><label id="trendNutrientLabel" class="hidden">Nutrient <select id="trendNutrient"></select></label><label>Range <select id="trendRange"><option value="14">14 days</option><option value="30" selected>30 days</option><option value="90">90 days</option><option value="all">All recorded days</option></select></label></div><div id="trendChart" class="trend-chart" role="img" aria-label="Daily intake trend chart"></div><div id="trendTable"></div></section>
+<section class="box" id="historySection"><h2>History & backups</h2><div class="bar"><button id="prev">← Previous day</button><button id="next">Next day →</button><button id="export">Download backup</button><button id="csv">Export nutrient details CSV</button><button id="csvTotals">Export daily totals CSV</button><button id="restore">Restore backup</button><input type="file" id="file" accept=".json,application/json" hidden></div><p class="note">Daily logs and your library are saved on the NAS in SQLite. Back up the NAS data folder regularly. Export nutrient details CSV for per-supplement ingredients, servings, and dose amounts; export daily totals CSV for combined nutrients per date. The JSON backup button provides an additional portable backup.</p></section>
+<section class="box hidden" id="libraryBox"><h2>Supplement library</h2><p class="note">Edit a supplement's name, brand, and ingredient rows using JSON. Back up before changes. Past logged nutrient snapshots are preserved even when the product is edited.</p><div class="bar" style="margin-bottom:10px"><input id="librarySearch" type="search" placeholder="Search supplements or brands" aria-label="Search library" style="width:100%;max-width:380px;background:#101D30;color:#F2F7FF;border:1px solid #577399;padding:10px"></div><div id="libraryCards" class="grid" style="margin:12px 0 18px"></div><label for="librarySelect" class="note">Selected product for editing</label><select id="librarySelect" style="display:block;max-width:100%;width:100%"></select><label style="display:inline-block;margin:10px 0 6px">Product status <select id="libraryStatus"><option value="active">Active</option><option value="inactive">Inactive</option><option value="discontinued">Discontinued</option></select></label><p class="note">Inactive and discontinued products are hidden from new daily checklists, but remain in the library, historical logs, and CSV exports.</p><textarea id="libraryJson" style="display:block;width:100%;height:230px;margin:12px 0;background:#101D30;color:#F2F7FF;border:1px solid #577399;border-radius:8px;padding:12px"></textarea><div class="bar"><button id="saveLibrary" class="primary">Save supplement</button><button id="addLibrary">Add new</button><button id="removeLibrary">Delete selected</button></div></section>
+<section class="box" id="importBox"><h2>Import supplements</h2><p class="note">Paste supplement facts text or upload CSV/XLSX. Preview and edit ingredients before adding anything to your library. Nothing is saved until you choose Add to library.</p>
+<div class="bar"><button id="importTemplate">Download CSV template</button></div>
+<div class="import-grid"><div><label for="importBrand">Brand (for pasted text)</label><input id="importBrand" type="text" placeholder="e.g. Pure Encapsulations"><label for="importName">Supplement name (for pasted text)</label><input id="importName" type="text" placeholder="e.g. Magnesium Glycinate"><label for="importFacts">Paste Supplement Facts</label><textarea id="importFacts" placeholder="Serving Size: 3 capsules&#10;Magnesium (as magnesium glycinate) 360 mg&#10;Vitamin D3 25 mcg"></textarea><button id="parseFacts" class="primary">Preview pasted label</button></div>
+<div><label for="importSheet">Import CSV or Excel</label><input id="importSheet" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"><p class="note">Use columns: Supplement, Brand, Nutrient, Amount, Unit, Type. Supports several supplements per file. XLSX: first worksheet only, values only. Maximum 2 MB.</p><button id="parseSheet">Preview file</button></div></div>
+<p id="importMessage" role="status" class="note"></p><div id="importPreview" class="hidden"><h3>Review before import</h3><p class="note">Amounts are per serving. Verify units, serving size, and proprietary blends against the original product label. Duplicate product names are skipped unless you intentionally replace them.</p><div id="importCards"></div><div class="bar"><button id="saveImports" class="primary">Add reviewed supplements</button><button id="cancelImports">Cancel</button></div></div></section>
+</div><div id="cloudLogin" style="display:none;position:fixed;inset:0;background:#061224f2;z-index:9999;align-items:center;justify-content:center;padding:16px"><form id="cloudLoginForm" style="width:min(420px,100%);padding:28px;border-radius:18px;background:#0d2440;color:white;border:1px solid #32618b;display:grid;gap:14px"><h2 style="margin:0">Supplement Tracker</h2><p style="margin:0">Sign in to your private Supabase account</p><label>Email<input type="email" id="cloudEmail" required autocomplete="username" style="width:100%;padding:12px"></label><label>Password<input type="password" id="cloudPassword" required autocomplete="current-password" style="width:100%;padding:12px"></label><button type="submit" id="cloudLoginButton">Sign in</button><div id="cloudLoginError" role="alert"></div></form></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="./config.js"></script><script>
+const SEED_SUPPLEMENTS = [
+  {
+    "id": "seed_one_mf",
+    "name": "Multivitamin One MF",
+    "brand": "Seeking Health",
+    "type": "methylfree",
+    "nutrients": [
+      {
+        "name": "Vitamin A",
+        "amount": 750,
+        "unit": "mcg"
+      },
+      {
+        "name": "Vitamin D",
+        "amount": 25,
+        "unit": "mcg"
+      },
+      {
+        "name": "Vitamin E",
+        "amount": 50,
+        "unit": "mg"
+      },
+      {
+        "name": "Thiamin (B1)",
+        "amount": 25,
+        "unit": "mg"
+      },
+      {
+        "name": "Riboflavin (B2)",
+        "amount": 5,
+        "unit": "mg"
+      },
+      {
+        "name": "Niacin",
+        "amount": 20,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin B6",
+        "amount": 10,
+        "unit": "mg"
+      },
+      {
+        "name": "Folate (calcium folinate)",
+        "amount": 400,
+        "unit": "mcg"
+      },
+      {
+        "name": "Vitamin B12 (hydroxo + adenosyl)",
+        "amount": 25,
+        "unit": "mcg"
+      },
+      {
+        "name": "Biotin",
+        "amount": 500,
+        "unit": "mcg"
+      },
+      {
+        "name": "Pantothenic Acid (B5)",
+        "amount": 50,
+        "unit": "mg"
+      },
+      {
+        "name": "Iodine",
+        "amount": 150,
+        "unit": "mcg"
+      },
+      {
+        "name": "Zinc",
+        "amount": 10,
+        "unit": "mg"
+      },
+      {
+        "name": "Selenium",
+        "amount": 60,
+        "unit": "mcg"
+      },
+      {
+        "name": "Copper",
+        "amount": 1,
+        "unit": "mg"
+      },
+      {
+        "name": "Manganese",
+        "amount": 1,
+        "unit": "mg"
+      },
+      {
+        "name": "Chromium",
+        "amount": 200,
+        "unit": "mcg"
+      },
+      {
+        "name": "Molybdenum",
+        "amount": 75,
+        "unit": "mcg"
+      },
+      {
+        "name": "Boron",
+        "amount": 1,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin K2",
+        "amount": 100,
+        "unit": "mcg"
+      },
+      {
+        "name": "Lutein",
+        "amount": 3,
+        "unit": "mg"
+      }
+    ],
+    "status": "inactive"
+  },
+  {
+    "id": "seed_woke_af",
+    "name": "Woke AF",
+    "brand": "Bucked Up",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Citrulline Malate (2:1)",
+        "amount": 6000,
+        "unit": "mg"
+      },
+      {
+        "name": "Beta-Alanine",
+        "amount": 3200,
+        "unit": "mg"
+      },
+      {
+        "name": "Caffeine Anhydrous",
+        "amount": 333,
+        "unit": "mg"
+      },
+      {
+        "name": "AlphaSize Alpha-GPC",
+        "amount": 200,
+        "unit": "mg"
+      },
+      {
+        "name": "Taurine",
+        "amount": 100,
+        "unit": "mg"
+      },
+      {
+        "name": "Himalayan Rock Salt",
+        "amount": 100,
+        "unit": "mg"
+      },
+      {
+        "name": "Dendrobium (4:1) Extract",
+        "amount": 100,
+        "unit": "mg"
+      },
+      {
+        "name": "Deer Antler Velvet Extract",
+        "amount": 50,
+        "unit": "mg"
+      },
+      {
+        "name": "Synephrine HCl",
+        "amount": 40,
+        "unit": "mg"
+      },
+      {
+        "name": "AstraGin",
+        "amount": 25,
+        "unit": "mg"
+      },
+      {
+        "name": "Senactiv",
+        "amount": 25,
+        "unit": "mg"
+      },
+      {
+        "name": "Huperzine A",
+        "amount": 50,
+        "unit": "mcg"
+      },
+      {
+        "name": "Sodium",
+        "amount": 39,
+        "unit": "mg"
+      }
+    ],
+    "status": "inactive"
+  },
+  {
+    "id": "seed_on_creatine",
+    "name": "Micronized Creatine Powder",
+    "brand": "Optimum Nutrition",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Creatine Monohydrate",
+        "amount": 5000,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "1 rounded scoop (5 g)",
+    "servingsPerContainer": 240,
+    "notes": "100% creatine monohydrate. Other ingredients: none.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_nutricost_glutamine",
+    "name": "L-Glutamine",
+    "brand": "Nutricost",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "L-Glutamine",
+        "amount": 5000,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "1 scoop (5 g)",
+    "servingsPerContainer": 200,
+    "notes": "Other ingredients: none",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_olly_goodbye_stress",
+    "name": "Goodbye Stress Ultra Strength",
+    "brand": "OLLY",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "GABA",
+        "amount": 100,
+        "unit": "mg"
+      },
+      {
+        "name": "L-Theanine",
+        "amount": 100,
+        "unit": "mg"
+      },
+      {
+        "name": "Ashwagandha extract",
+        "amount": 125,
+        "unit": "mg"
+      },
+      {
+        "name": "Lemon Balm extract",
+        "amount": 75,
+        "unit": "mg"
+      }
+    ],
+    "status": "inactive"
+  },
+  {
+    "id": "seed_celsius_orange",
+    "name": "Live Fit Orange — Powder Stick",
+    "brand": "Celsius",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Calories",
+        "amount": 10,
+        "unit": "kcal"
+      },
+      {
+        "name": "Total Fat",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Sodium",
+        "amount": 0,
+        "unit": "mg"
+      },
+      {
+        "name": "Total Carbohydrate",
+        "amount": 1,
+        "unit": "g"
+      },
+      {
+        "name": "Protein",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Calcium",
+        "amount": 50,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin C",
+        "amount": 60,
+        "unit": "mg"
+      },
+      {
+        "name": "Riboflavin (B2)",
+        "amount": 1.7,
+        "unit": "mg"
+      },
+      {
+        "name": "Niacin",
+        "amount": 20,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin B6",
+        "amount": 2,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin B12 (cyanocobalamin)",
+        "amount": 6,
+        "unit": "mcg"
+      },
+      {
+        "name": "Biotin",
+        "amount": 300,
+        "unit": "mcg"
+      },
+      {
+        "name": "Pantothenic Acid (B5)",
+        "amount": 10,
+        "unit": "mg"
+      },
+      {
+        "name": "Chromium",
+        "amount": 50,
+        "unit": "mcg"
+      },
+      {
+        "name": "Caffeine",
+        "amount": 200,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "1 stick (5.25 g)",
+    "servingsPerContainer": 14,
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_pe_magnesium",
+    "name": "Magnesium (Glycinate)",
+    "brand": "Pure Encapsulations",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Magnesium (as magnesium glycinate)",
+        "amount": 120,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "1 capsule",
+    "servingsPerContainer": 360,
+    "defaultServings": 3,
+    "notes": "Default daily quantity: 3 capsules = 360 mg.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_nello_supercalm",
+    "name": "SuperCalm (Lemon Lime)",
+    "brand": "Nello",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Calories",
+        "amount": 10,
+        "unit": "kcal"
+      },
+      {
+        "name": "Total Carbohydrate",
+        "amount": 3,
+        "unit": "g"
+      },
+      {
+        "name": "Vitamin D3",
+        "amount": 25,
+        "unit": "mcg"
+      },
+      {
+        "name": "Magnesium (as magnesium glycinate)",
+        "amount": 100,
+        "unit": "mg"
+      },
+      {
+        "name": "L-Theanine",
+        "amount": 400,
+        "unit": "mg"
+      },
+      {
+        "name": "KSM-66 Ashwagandha root extract",
+        "amount": 300,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "1 scoop (4.30 g)",
+    "servingsPerContainer": 20,
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_gut_c",
+    "name": "GUT·C (Strawberry Lemonade)",
+    "brand": "Gut Culture",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Dietary Fiber",
+        "amount": 5000,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin C (ascorbic acid)",
+        "amount": 45,
+        "unit": "mg"
+      },
+      {
+        "name": "Thiamin (B1, as thiamin mononitrate)",
+        "amount": 0.6,
+        "unit": "mg"
+      },
+      {
+        "name": "Niacin (as niacinamide)",
+        "amount": 4,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin B6 (as pyridoxine HCl)",
+        "amount": 0.85,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin B12 (as methylcobalamin)",
+        "amount": 2.4,
+        "unit": "mcg"
+      },
+      {
+        "name": "Pantothenic Acid (B5, as calcium pantothenate)",
+        "amount": 2.5,
+        "unit": "mg"
+      },
+      {
+        "name": "Magnesium (as magnesium citrate)",
+        "amount": 42,
+        "unit": "mg"
+      },
+      {
+        "name": "Sodium (as pink Himalayan salt)",
+        "amount": 345,
+        "unit": "mg"
+      },
+      {
+        "name": "Potassium (as potassium citrate)",
+        "amount": 235,
+        "unit": "mg"
+      },
+      {
+        "name": "Bacillus coagulans (100B CFU/g)",
+        "amount": 5,
+        "unit": "mg"
+      },
+      {
+        "name": "Bacillus subtilis (100B CFU/g)",
+        "amount": 5,
+        "unit": "mg"
+      },
+      {
+        "name": "Prebiotic Blend (Solnul, Chicory Root Fiber)",
+        "amount": 6600,
+        "unit": "mg"
+      }
+    ],
+    "status": "discontinued"
+  },
+  {
+    "id": "seed_metamucil_4in1",
+    "name": "4-in-1 Psyllium Husk Fiber (Sugar-Free)",
+    "brand": "Metamucil",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Calories",
+        "amount": 30,
+        "unit": "kcal"
+      },
+      {
+        "name": "Total Carbohydrate",
+        "amount": 10,
+        "unit": "g"
+      },
+      {
+        "name": "Dietary Fiber",
+        "amount": 6,
+        "unit": "g"
+      },
+      {
+        "name": "Soluble Fiber (included in Dietary Fiber)",
+        "amount": 5,
+        "unit": "g"
+      },
+      {
+        "name": "Iron",
+        "amount": 0.7,
+        "unit": "mg"
+      },
+      {
+        "name": "Sodium",
+        "amount": 10,
+        "unit": "mg"
+      },
+      {
+        "name": "Potassium",
+        "amount": 60,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "2 rounded teaspoons (11.6 g)",
+    "defaultServings": 1,
+    "servingsPerContainer": 90,
+    "notes": "Soluble fiber is included in dietary fiber; do not sum both.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_core_power_elite",
+    "name": "Core Power Elite 42g (Chocolate)",
+    "brand": "Fairlife",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Calories",
+        "amount": 230,
+        "unit": "kcal"
+      },
+      {
+        "name": "Protein",
+        "amount": 42,
+        "unit": "g"
+      },
+      {
+        "name": "Total Fat",
+        "amount": 3.5,
+        "unit": "g"
+      },
+      {
+        "name": "Saturated Fat",
+        "amount": 2,
+        "unit": "g"
+      },
+      {
+        "name": "Trans Fat",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Cholesterol",
+        "amount": 35,
+        "unit": "mg"
+      },
+      {
+        "name": "Sodium",
+        "amount": 260,
+        "unit": "mg"
+      },
+      {
+        "name": "Total Carbohydrate",
+        "amount": 9,
+        "unit": "g"
+      },
+      {
+        "name": "Dietary Fiber",
+        "amount": 2,
+        "unit": "g"
+      },
+      {
+        "name": "Total Sugars",
+        "amount": 7,
+        "unit": "g"
+      },
+      {
+        "name": "Added Sugars",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Vitamin D3",
+        "amount": 10,
+        "unit": "mcg"
+      },
+      {
+        "name": "Calcium",
+        "amount": 900,
+        "unit": "mg"
+      },
+      {
+        "name": "Iron",
+        "amount": 1.6,
+        "unit": "mg"
+      },
+      {
+        "name": "Potassium",
+        "amount": 700,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin A (RAE)",
+        "amount": 240,
+        "unit": "mcg"
+      }
+    ],
+    "servingDescription": "1 bottle (414 mL)",
+    "servingsPerContainer": 1,
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_now_coq10",
+    "name": "CoQ10 200mg",
+    "brand": "NOW Foods",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Coenzyme Q10 (Ubiquinone)",
+        "amount": 200,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "1 vegetarian capsule",
+    "notes": "Ubiquinone (all-trans). Other ingredients: rice flour, hypromellose, magnesium stearate, silicon dioxide.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_now_methionine",
+    "name": "L-Methionine 500mg with Vitamin B-6",
+    "brand": "NOW Foods",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "L-Methionine (Free-Form)",
+        "amount": 500,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin B6 (as pyridoxine HCl)",
+        "amount": 10,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "1 capsule",
+    "defaultServings": 1,
+    "servingsPerContainer": 100,
+    "notes": "Bottle Supplement Facts is for 2 capsules; per-capsule values are half the label.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_dose_liver",
+    "name": "Dose for your Liver (2oz shot)",
+    "brand": "Dose",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Calories",
+        "amount": 0,
+        "unit": "kcal"
+      },
+      {
+        "name": "Total Carbohydrate",
+        "amount": 5,
+        "unit": "g"
+      },
+      {
+        "name": "Total Sugars",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Sodium",
+        "amount": 50,
+        "unit": "mg"
+      },
+      {
+        "name": "Potassium",
+        "amount": 90,
+        "unit": "mg"
+      },
+      {
+        "name": "Proprietary Blend (turmeric, milk thistle, dandelion, ginger)",
+        "amount": 435,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "4 tbsp (59 mL)",
+    "servingsPerContainer": 8,
+    "notes": "Proprietary blend constituent amounts not individually disclosed.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_dymatize_iso100",
+    "name": "ISO100 Whey Isolate (Cookies & Cream)",
+    "brand": "Dymatize",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Calories",
+        "amount": 120,
+        "unit": "kcal"
+      },
+      {
+        "name": "Protein",
+        "amount": 25,
+        "unit": "g"
+      },
+      {
+        "name": "Total Fat",
+        "amount": 1,
+        "unit": "g"
+      },
+      {
+        "name": "Saturated Fat",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Trans Fat",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Cholesterol",
+        "amount": 10,
+        "unit": "mg"
+      },
+      {
+        "name": "Sodium",
+        "amount": 130,
+        "unit": "mg"
+      },
+      {
+        "name": "Total Carbohydrate",
+        "amount": 2,
+        "unit": "g"
+      },
+      {
+        "name": "Dietary Fiber",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Total Sugars",
+        "amount": 1,
+        "unit": "g"
+      },
+      {
+        "name": "Added Sugars",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Vitamin D",
+        "amount": 0,
+        "unit": "mcg"
+      },
+      {
+        "name": "Calcium",
+        "amount": 120,
+        "unit": "mg"
+      },
+      {
+        "name": "Iron",
+        "amount": 0,
+        "unit": "mg"
+      },
+      {
+        "name": "Potassium",
+        "amount": 140,
+        "unit": "mg"
+      },
+      {
+        "name": "Alanine",
+        "amount": 1238,
+        "unit": "mg"
+      },
+      {
+        "name": "Arginine",
+        "amount": 686,
+        "unit": "mg"
+      },
+      {
+        "name": "Aspartic Acid",
+        "amount": 2603,
+        "unit": "mg"
+      },
+      {
+        "name": "Cystine",
+        "amount": 521,
+        "unit": "mg"
+      },
+      {
+        "name": "Glutamine & Glutamic Acid",
+        "amount": 4406,
+        "unit": "mg"
+      },
+      {
+        "name": "Glycine",
+        "amount": 454,
+        "unit": "mg"
+      },
+      {
+        "name": "Histidine",
+        "amount": 441,
+        "unit": "mg"
+      },
+      {
+        "name": "Isoleucine",
+        "amount": 1421,
+        "unit": "mg"
+      },
+      {
+        "name": "Leucine",
+        "amount": 2677,
+        "unit": "mg"
+      },
+      {
+        "name": "Lysine",
+        "amount": 2349,
+        "unit": "mg"
+      },
+      {
+        "name": "Methionine",
+        "amount": 568,
+        "unit": "mg"
+      },
+      {
+        "name": "Phenylalanine",
+        "amount": 777,
+        "unit": "mg"
+      },
+      {
+        "name": "Proline",
+        "amount": 1435,
+        "unit": "mg"
+      },
+      {
+        "name": "Serine",
+        "amount": 1258,
+        "unit": "mg"
+      },
+      {
+        "name": "Threonine",
+        "amount": 1722,
+        "unit": "mg"
+      },
+      {
+        "name": "Tryptophan",
+        "amount": 414,
+        "unit": "mg"
+      },
+      {
+        "name": "Tyrosine",
+        "amount": 721,
+        "unit": "mg"
+      },
+      {
+        "name": "Valine",
+        "amount": 1447,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "1 scoop (30 g)",
+    "notes": "Typical amino acid profile; included in protein, do not add to protein total. Glutamine & glutamic acid are a combined reported amount.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_on_casein",
+    "name": "Gold Standard 100% Casein (Chocolate Supreme)",
+    "brand": "Optimum Nutrition",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Calories",
+        "amount": 120,
+        "unit": "kcal"
+      },
+      {
+        "name": "Protein",
+        "amount": 24,
+        "unit": "g"
+      },
+      {
+        "name": "Total Fat",
+        "amount": 1,
+        "unit": "g"
+      },
+      {
+        "name": "Cholesterol",
+        "amount": 15,
+        "unit": "mg"
+      },
+      {
+        "name": "Sodium",
+        "amount": 260,
+        "unit": "mg"
+      },
+      {
+        "name": "Total Carbohydrate",
+        "amount": 4,
+        "unit": "g"
+      },
+      {
+        "name": "Dietary Fiber",
+        "amount": 1,
+        "unit": "g"
+      },
+      {
+        "name": "Total Sugars",
+        "amount": 1,
+        "unit": "g"
+      },
+      {
+        "name": "Added Sugars",
+        "amount": 0,
+        "unit": "g"
+      },
+      {
+        "name": "Calcium",
+        "amount": 500,
+        "unit": "mg"
+      },
+      {
+        "name": "Iron",
+        "amount": 1.5,
+        "unit": "mg"
+      },
+      {
+        "name": "Potassium",
+        "amount": 200,
+        "unit": "mg"
+      },
+      {
+        "name": "Magnesium",
+        "amount": 85,
+        "unit": "mg"
+      },
+      {
+        "name": "Zinc",
+        "amount": 11,
+        "unit": "mg"
+      },
+      {
+        "name": "Total EAAs (included in protein; not additive)",
+        "amount": 9,
+        "unit": "g"
+      }
+    ],
+    "servingDescription": "1 scoop (34 g)",
+    "servingsPerContainer": 53,
+    "notes": "Individual amino acid quantities not disclosed; 9 g naturally occurring EAAs are included in the 24 g protein.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_sh_multivitamin_one",
+    "name": "Multivitamin One",
+    "brand": "Seeking Health",
+    "type": "methylated",
+    "nutrients": [
+      {
+        "name": "Vitamin A (RAE)",
+        "amount": 750,
+        "unit": "mcg"
+      },
+      {
+        "name": "Vitamin D3",
+        "amount": 25,
+        "unit": "mcg"
+      },
+      {
+        "name": "Vitamin E",
+        "amount": 50,
+        "unit": "mg"
+      },
+      {
+        "name": "Thiamin (B1)",
+        "amount": 25,
+        "unit": "mg"
+      },
+      {
+        "name": "Riboflavin (B2)",
+        "amount": 5,
+        "unit": "mg"
+      },
+      {
+        "name": "Niacin (NE)",
+        "amount": 20,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin B6",
+        "amount": 20,
+        "unit": "mg"
+      },
+      {
+        "name": "Folate (DFE)",
+        "amount": 400,
+        "unit": "mcg"
+      },
+      {
+        "name": "Vitamin B12 (methylcobalamin + adenosylcobalamin)",
+        "amount": 26,
+        "unit": "mcg"
+      },
+      {
+        "name": "Biotin",
+        "amount": 500,
+        "unit": "mcg"
+      },
+      {
+        "name": "Pantothenic Acid (B5)",
+        "amount": 50,
+        "unit": "mg"
+      },
+      {
+        "name": "Choline",
+        "amount": 50,
+        "unit": "mg"
+      },
+      {
+        "name": "Iodine",
+        "amount": 100,
+        "unit": "mcg"
+      },
+      {
+        "name": "Zinc",
+        "amount": 10,
+        "unit": "mg"
+      },
+      {
+        "name": "Selenium",
+        "amount": 75,
+        "unit": "mcg"
+      },
+      {
+        "name": "Manganese",
+        "amount": 1,
+        "unit": "mg"
+      },
+      {
+        "name": "Chromium",
+        "amount": 200,
+        "unit": "mcg"
+      },
+      {
+        "name": "Molybdenum",
+        "amount": 75,
+        "unit": "mcg"
+      },
+      {
+        "name": "Inositol",
+        "amount": 50,
+        "unit": "mg"
+      },
+      {
+        "name": "Superoxide Dismutase (SOD extract)",
+        "amount": 7,
+        "unit": "mg"
+      },
+      {
+        "name": "Mixed Tocopherols",
+        "amount": 5,
+        "unit": "mg"
+      },
+      {
+        "name": "Lutein",
+        "amount": 3,
+        "unit": "mg"
+      },
+      {
+        "name": "S-Acetyl-L-Glutathione",
+        "amount": 2,
+        "unit": "mg"
+      },
+      {
+        "name": "Boron",
+        "amount": 1,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin K2 (MK-7)",
+        "amount": 100,
+        "unit": "mcg"
+      }
+    ],
+    "servingDescription": "1 capsule",
+    "servingsPerContainer": 45,
+    "notes": "Folate: 400 mcg DFE represents 235 mcg folate; do not add them. Vitamin A uses mcg RAE; niacin uses mg NE. SOD: 7 mg extract / 100 IU activity.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "seed_optimalamino",
+    "name": "OptimalAmino EAA Tablets (10-tablet serving)",
+    "brand": "OptimalAmino",
+    "type": "neutral",
+    "nutrients": [
+      {
+        "name": "Leucine",
+        "amount": 1964,
+        "unit": "mg"
+      },
+      {
+        "name": "Valine",
+        "amount": 1657,
+        "unit": "mg"
+      },
+      {
+        "name": "Isoleucine",
+        "amount": 1483,
+        "unit": "mg"
+      },
+      {
+        "name": "Lysine (as L-Lysine HCl)",
+        "amount": 1429,
+        "unit": "mg"
+      },
+      {
+        "name": "Phenylalanine",
+        "amount": 1289,
+        "unit": "mg"
+      },
+      {
+        "name": "Threonine",
+        "amount": 1111,
+        "unit": "mg"
+      },
+      {
+        "name": "Methionine",
+        "amount": 699,
+        "unit": "mg"
+      },
+      {
+        "name": "Tryptophan",
+        "amount": 368,
+        "unit": "mg"
+      }
+    ],
+    "servingDescription": "10 tablets",
+    "servingsPerContainer": 30,
+    "notes": "300 tablets, no other ingredients. Sum BCAAs / EAAs from individual listed ingredients; do not double count.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "sports_research_d3_k2",
+    "name": "Vegan Vitamin D3 + K2 with Coconut Oil",
+    "brand": "Sports Research",
+    "type": "neutral",
+    "status": "active",
+    "defaultServings": 1,
+    "servingDescription": "1 veggie softgel",
+    "servingsPerContainer": 120,
+    "nutrients": [
+      {
+        "name": "Vitamin D3 (cholecalciferol from lichen)",
+        "amount": 125,
+        "unit": "mcg"
+      },
+      {
+        "name": "Vitamin K2 (MK-7 from chickpea)",
+        "amount": 100,
+        "unit": "mcg"
+      }
+    ],
+    "notes": "Vitamin D3: 5,000 IU (125 mcg). Contains coconut MCT oil.",
+    "verification": "label_verified"
+  },
+  {
+    "id": "gorilla_mode_fruit_punch",
+    "name": "Gorilla Mode Pre-Workout — Fruit Punch",
+    "brand": "Gorilla Mind",
+    "type": "neutral",
+    "status": "active",
+    "defaultServings": 1,
+    "servingDescription": "1 scoop (20.4 g)",
+    "servingsPerContainer": 40,
+    "nutrients": [
+      {
+        "name": "Calories",
+        "amount": 5,
+        "unit": "kcal"
+      },
+      {
+        "name": "Total Carbohydrate",
+        "amount": 1,
+        "unit": "g"
+      },
+      {
+        "name": "Niacin (niacinamide)",
+        "amount": 16,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin B6 (P5P)",
+        "amount": 10,
+        "unit": "mg"
+      },
+      {
+        "name": "Vitamin B12 (methylcobalamin)",
+        "amount": 125,
+        "unit": "mcg"
+      },
+      {
+        "name": "Magnesium (bisglycinate)",
+        "amount": 25,
+        "unit": "mg"
+      },
+      {
+        "name": "Sodium",
+        "amount": 190,
+        "unit": "mg"
+      },
+      {
+        "name": "Potassium",
+        "amount": 190,
+        "unit": "mg"
+      },
+      {
+        "name": "L-Citrulline",
+        "amount": 5000,
+        "unit": "mg"
+      },
+      {
+        "name": "Creatine Monohydrate",
+        "amount": 2500,
+        "unit": "mg"
+      },
+      {
+        "name": "L-Tyrosine",
+        "amount": 2500,
+        "unit": "mg"
+      },
+      {
+        "name": "Betaine Anhydrous",
+        "amount": 2000,
+        "unit": "mg"
+      },
+      {
+        "name": "HydroPrime glycerol powder (65%)",
+        "amount": 2000,
+        "unit": "mg"
+      },
+      {
+        "name": "Malic Acid",
+        "amount": 1500,
+        "unit": "mg"
+      },
+      {
+        "name": "Pink Himalayan Sea Salt",
+        "amount": 500,
+        "unit": "mg"
+      },
+      {
+        "name": "Alpha-GPC 50% material",
+        "amount": 400,
+        "unit": "mg"
+      },
+      {
+        "name": "Caffeine Anhydrous",
+        "amount": 200,
+        "unit": "mg"
+      },
+      {
+        "name": "Huperzine A",
+        "amount": 100,
+        "unit": "mcg"
+      }
+    ],
+    "notes": "Pink salt is not additional to label sodium; Alpha-GPC 50% is ingredient material weight, not pure Alpha-GPC.",
+    "verification": "label_verified"
+  }
+];
+
+const STATUS_DEFAULTS={'seed_one_mf':'inactive','seed_olly_goodbye_stress':'inactive','seed_gut_c':'discontinued','seed_woke_af':'inactive','seed_sh_multivitamin_one':'active'};
+function ensureStatuses(){let changed=false;for(const s of supplements){if(!['active','inactive','discontinued'].includes(s.status)){s.status=STATUS_DEFAULTS[s.id]||'active';changed=true}}return changed}
+const KEY='daily-supplement-ledger-v2';let supplements=structuredClone(SEED_SUPPLEMENTS),logs={}, snapshots={}, date='', favorites=[], routines=[];
+const $=id=>document.getElementById(id);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=x=>Number(x.toFixed(3)).toLocaleString(undefined,{maximumFractionDigits:3});
+function initialDate(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+async function cloudClient(){
+  if(!window.supabase || !window.SUPABASE_URL || !window.SUPABASE_PUBLISHABLE_KEY) throw Error('Set your Supabase URL and publishable key in config.js');
+  if(!window.cloudDB) window.cloudDB=window.supabase.createClient(window.SUPABASE_URL,window.SUPABASE_PUBLISHABLE_KEY);
+  return window.cloudDB;
+}
+async function loginIfNeeded(db){
+  const {data:{session}}=await db.auth.getSession();
+  if(session)return session.user.id;
+  const panel=$('cloudLogin');panel.style.display='flex';
+  return new Promise(resolve=>{
+    $('cloudLoginForm').onsubmit=async e=>{
+      e.preventDefault();
+      const btn=$('cloudLoginButton');btn.disabled=true;
+      $('cloudLoginError').textContent='Signing in…';
+      const {data,error}=await db.auth.signInWithPassword({email:$('cloudEmail').value.trim(),password:$('cloudPassword').value});
+      btn.disabled=false;
+      if(error){$('cloudLoginError').textContent=error.message;return;}
+      $('cloudPassword').value='';panel.style.display='none';resolve(data.user.id);
+    };
+  });
+}
+let cloudRevision=0, cloudUser=null, saveBlocked=false;
+async function read(){
+  try{
+    const db=await cloudClient(); cloudUser=await loginIfNeeded(db);
+    const {data,error}=await db.from('tracker_state').select('payload,revision').eq('user_id',cloudUser).maybeSingle();
+    if(error)throw error;
+    if(data){
+      const x=data.payload;
+      if(!Array.isArray(x?.supplements)||typeof x?.logs!=='object')throw Error('Cloud state is invalid');
+      supplements=x.supplements;logs=x.logs;snapshots=x.snapshots&&typeof x.snapshots==='object'?x.snapshots:{};
+      favorites=Array.isArray(x.favorites)?x.favorites:[];routines=Array.isArray(x.routines)?x.routines:[];
+      cloudRevision=data.revision;
+    }else{
+      // Empty account: start with label-verified V4.2 seed; do not create state until user consciously saves/imports.
+      $('status').textContent='New cloud account — import your Synology backup before logging';
+    }
+    // Do not call backfillSnapshots on imported historical rows: never invent historical composition.
+    ensureStatuses();
+    $('status').textContent=data?'Connected to Supabase':'New account — import your NAS state JSON';
+    return true;
+  }catch(e){ $('status').textContent='⚠ '+e.message;document.body.style.pointerEvents='none';return false; }
+}
+let queuedSave=Promise.resolve();
+function save(){
+  const payload=JSON.stringify({version:4,supplements,logs,snapshots,favorites,routines});
+  if(saveBlocked){$('status').textContent='⚠ Save blocked: cloud state changed elsewhere. Reload before editing.';return queuedSave;}
+  $('status').textContent='Saving to cloud…';
+  queuedSave=queuedSave.catch(()=>{}).then(async()=>{
+    const db=await cloudClient();
+    const {data,error}=await db.rpc('save_tracker_state',{expected_revision:cloudRevision,new_payload:JSON.parse(payload)});
+    if(error)throw error;
+    if(data===null||data===undefined)throw Error('Save returned no revision');
+    cloudRevision=Number(data);
+    $('status').textContent='Saved to Supabase';
+  }).catch(e=>{saveBlocked=true;$('status').textContent='⚠ Save failed — changes not synced. Export backup before reloading. '+e.message;console.error(e);});
+  return queuedSave;
+}
+function setDate(d){if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return;date=d;$('date').value=d;render();if(typeof refreshV4==='function')refreshV4()}
+function day(){return logs[date]||{}}
+// The first time a product is logged for a date, lock in a copy of its composition.
+// Backfill legacy dates from currently known composition (not guaranteed original).
+function snapshotFor(dayKey,id){return snapshots[dayKey]?.[id]||supplements.find(s=>s.id===id)||null}
+function freezeSnapshot(dayKey,id){const s=supplements.find(s=>s.id===id);if(!s)return;
+  if(!snapshots[dayKey])snapshots[dayKey]={};
+  if(!snapshots[dayKey][id])snapshots[dayKey][id]=structuredClone(s);
+}
+function backfillSnapshots(){let changed=false;
+  for(const [d,items] of Object.entries(logs))for(const [id,n] of Object.entries(items||{})){
+    if(Number(n)<=0||snapshots[d]?.[id])continue;
+    const product=supplements.find(s=>s.id===id);if(!product)continue;
+    freezeSnapshot(d,id);changed=true;
+  }
+  return changed;
+}
+function logProductIds(loggedDay){return Object.keys(loggedDay||{}).filter(id=>Number(loggedDay[id])>0)}
+function toggle(id,checked){const d={...day()};if(checked){freezeSnapshot(date,id);d[id]=d[id]||(supplements.find(s=>s.id===id)?.defaultServings||1);}else{delete d[id];if(snapshots[date])delete snapshots[date][id];}logs[date]=d;save();render();if(typeof refreshV4==='function')refreshV4()}
+function servings(id,value){const d={...day()},v=Number(value);if(Number.isFinite(v)&&v>0&&v<=100){freezeSnapshot(date,id);d[id]=v;logs[date]=d;save();renderTotals();if(typeof refreshV4==='function')refreshV4()}else{$('status').textContent='Enter a positive serving amount (up to 100)'}}
+function normName(name){let n=name.toLowerCase().trim();const aliases=[[/^vitamin d(?:3|2)?\b/,'Vitamin D'],[/^vitamin a\b/,'Vitamin A'],[/^vitamin e\b/,'Vitamin E'],[/^vitamin k(?:2|1)?\b/,'Vitamin K'],[/^(thiamin|thiamine|vitamin b1)\b/,'Thiamin (B1)'],[/^(riboflavin|vitamin b2)\b/,'Riboflavin (B2)'],[/^niacin\b/,'Niacin (B3)'],[/^vitamin b6\b/,'Vitamin B6'],[/^folate\b/,'Folate (B9)'],[/^vitamin b12\b/,'Vitamin B12'],[/^biotin\b/,'Biotin (B7)'],[/^pantothenic acid\b/,'Pantothenic Acid (B5)'],[/^vitamin c\b/,'Vitamin C'],[/^magnesium\b/,'Magnesium'],[/^zinc\b/,'Zinc'],[/^selenium\b/,'Selenium'],[/^chromium\b/,'Chromium'],[/^molybdenum\b/,'Molybdenum'],[/^sodium\b/,'Sodium'],[/^potassium\b/,'Potassium'],[/^calcium\b/,'Calcium'],[/^lysine\b/,'Lysine'],[/^l-lysine\b/,'Lysine'],[/^l-methionine\b/,'Methionine'],[/^methionine\b/,'Methionine'],[/^caffeine\b/,'Caffeine'],[/^protein$/,'Protein'],[/^dietary fiber$/,'Dietary Fiber'],[/^total carbohydrate$/,'Total Carbohydrate'],[/^total fat$/,'Total Fat'],[/^total sugars$/,'Total Sugars']];for(const [re,nm] of aliases)if(re.test(n))return nm;return name.replace(/\s*\([^)]*\)/g,'').trim()}
+function groupFor(n){const s=n.toLowerCase();if(/^(vitamin|thiamin|riboflavin|niacin|folate|biotin|pantothenic)/.test(s))return 'Vitamins';if(/^(magnesium|zinc|selenium|chromium|molybdenum|sodium|potassium|calcium|iodine|copper|manganese|iron|boron|phosphorus)/.test(s))return 'Minerals';if(['Leucine','Isoleucine','Valine'].includes(n))return 'BCAAs';if(['Lysine','Methionine','Phenylalanine','Threonine','Tryptophan','Histidine'].includes(n)||s.includes('eaa'))return 'Other essential amino acids';if(/(glutamine|theanine|taurine|gaba|beta-alanine|citrulline)/i.test(s))return 'Other amino acids & related compounds';if(/^(protein|dietary fiber|soluble fiber|total carbohydrate|total fat|total sugars|cholesterol)$/.test(s))return 'Protein & macronutrients';return 'Other active ingredients'}
+function calc(loggedDay=day(),dayKey=date){const map=new Map();for(const id of logProductIds(loggedDay)){
+  const s=snapshotFor(dayKey,id);if(!s)continue;
+  const multiplier=Number(loggedDay[id]);for(const n of s.nutrients||[]){const keyName=normName(n.name),u=n.unit,amount=Number(n.amount)*multiplier;
+  if(!Number.isFinite(amount))continue;
+  const mg=u==='g'?amount*1000:u==='mcg'?amount/1000:u==='mg'?amount:null;
+  const key=keyName+'|'+(mg===null?u:'mg');
+  if(!map.has(key))map.set(key,{name:keyName,unit:mg===null?u:'mg',amount:0,sources:[]});
+  const r=map.get(key);r.amount+=mg===null?amount:mg;
+  r.sources.push(`${s.name} (${fmt(multiplier)}×): ${n.name} ${fmt(amount)} ${u}`);
+}}return [...map.values()]}
+
+function display(r){let a=r.amount,u=r.unit;if(u==='mg'&&a>=1000){a/=1000;u='g'}else if(u==='mg'&&a<.1){a*=1000;u='mcg'}return `${fmt(a)} ${u}`}
+function renderTotals(){const rows=calc();$('count').textContent=Object.keys(day()).length;$('entries').textContent=rows.length;$('daycount').textContent=Object.values(logs).filter(d=>Object.keys(d||{}).length).length;$('totalLabel').textContent=rows.length+' combined nutrients';if(!rows.length){$('nutrients').innerHTML='<p class="muted">Select a supplement above to see the daily breakdown.</p>';return}const order=['Vitamins','Minerals','Protein & macronutrients','BCAAs','Other essential amino acids','Other amino acids & related compounds','Other active ingredients'];$('nutrients').innerHTML=order.map(g=>{const items=rows.filter(r=>groupFor(r.name)===g).sort((a,b)=>a.name.localeCompare(b.name));return items.length?`<div class="group-title">${g} · ${items.length}</div>`+items.map(r=>`<details><summary><strong>${esc(r.name)}</strong><span class="amount">${esc(display(r))}</span></summary><div class="sources">${r.sources.map(esc).join('<br>')}</div></details>`).join(''):''}).join('')}
+function supplementCard(s,d){const on=Object.hasOwn(d,s.id);return `<div class="supp ${on?'active':''}"><button type="button" class="fav ${favorites.includes(s.id)?'on':''}" data-favorite="${esc(s.id)}" aria-label="Toggle favorite" title="Favorite">${favorites.includes(s.id)?'★':'☆'}</button><label><input type="checkbox" data-check="${esc(s.id)}" ${on?'checked':''}><span><strong>${esc(s.name)}</strong><span class="brand">${esc(s.brand||'')} · ${(s.nutrients||[]).length} ingredients${s.status!=='active'?' · '+esc(s.status):''}</span></span></label>${on?`<div class="serv">Servings taken <input type="number" min="0.1" max="100" step="0.5" data-serving="${esc(s.id)}" value="${esc(d[s.id])}"></div>`:''}</div>`}
+function render(){const d=day();$('supplements').innerHTML=supplements.filter(s=>s.status==='active').sort((a,b)=>Number(favorites.includes(b.id))-Number(favorites.includes(a.id))||a.name.localeCompare(b.name)).map(s=>supplementCard(s,d)).join('')||'<p class="muted">No active supplements. Use Edit library to activate a product.</p>';const historic=supplements.filter(s=>s.status!=='active'&&Object.hasOwn(d,s.id));$('inactiveLogged').classList.toggle('hidden',!historic.length);$('inactiveLogged').innerHTML=historic.length?`<div class="group-title">Previously logged inactive or discontinued products</div><p class="note">These entries are preserved on this date. You may remove them from this day, but their product remains in the library.</p><div class="grid">${historic.map(s=>supplementCard(s,d)).join('')}</div>`:'';document.querySelectorAll('[data-favorite]').forEach(el=>el.addEventListener('click',()=>{const id=el.dataset.favorite;favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];save();render()}));document.querySelectorAll('[data-check]').forEach(el=>el.addEventListener('change',()=>toggle(el.dataset.check,el.checked)));document.querySelectorAll('[data-serving]').forEach(el=>el.addEventListener('change',()=>servings(el.dataset.serving,el.value)));renderTotals()}
+
+function download(filename,data,type){const u=URL.createObjectURL(new Blob([data],{type})),a=document.createElement('a');a.href=u;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(u),3000)}
+// Import wizard: preview-only until the user explicitly approves the library change.
+let pendingImports=[];
+const IMPORT_UNITS=['mcg','mg','g','IU','mL'];
+function importMsg(v){$('importMessage').textContent=v}
+function importedId(){return 'import_'+Date.now()+'_'+Math.random().toString(36).slice(2,10)}
+function csvParse(text){const out=[];let row=[],cell='',quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(quoted){if(c==='"'&&text[i+1]==='"'){cell+='"';i++}else if(c==='"')quoted=false;else cell+=c}else if(c==='"')quoted=true;else if(c===','){row.push(cell);cell=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);if(row.some(x=>x.trim()))out.push(row);row=[];cell=''}else cell+=c}if(quoted)throw Error('CSV has an unmatched quote');row.push(cell);if(row.some(x=>x.trim()))out.push(row);return out}
+function readImportRows(rows){if(!rows.length)throw Error('The file is empty');const head=rows[0].map(x=>String(x??'').trim().toLowerCase().replace(/[^a-z0-9]/g,''));const col=(...options)=>head.findIndex(h=>options.includes(h));const ix={supp:col('supplement','supplementname','product','productname'),brand:col('brand','manufacturer'),nutrient:col('nutrient','ingredient','nutrientname','ingredientname'),amount:col('amount','amountperserving','quantity','dose'),unit:col('unit','units'),type:col('type','methylationtype')};if(ix.supp<0||ix.nutrient<0||ix.amount<0||ix.unit<0)throw Error('Required headers: Supplement, Nutrient, Amount, Unit');const groups=new Map(),warnings=[];for(let i=1;i<rows.length;i++){const r=rows[i],get=k=>ix[k]<0?'':String(r[ix[k]]??'').trim(),name=get('supp'),n=get('nutrient'),a=Number(get('amount')),unit=get('unit').replace(/μg|µg/gi,'mcg');if(!name&&!n)continue;if(!name||!n||!get('amount')||!Number.isFinite(a)||a<0||!IMPORT_UNITS.includes(unit)){warnings.push('Row '+(i+1)+' skipped (missing or invalid field/unit)');continue}const key=name.toLowerCase()+'|'+get('brand').toLowerCase();if(!groups.has(key))groups.set(key,{id:importedId(),name,brand:get('brand'),type:get('type')||'neutral',nutrients:[]});groups.get(key).nutrients.push({name:n,amount:a,unit})}if(!groups.size)throw Error('No valid nutrient rows found');return {items:[...groups.values()],warnings}}
+function pastedFacts(text,name,brand){if(!name.trim())throw Error('Enter a supplement name first');const nutrients=[],unmatched=[];for(const raw of text.split(/\r?\n/)){const line=raw.trim().replace(/[•·]/g,' ').trim();if(!line||/^supplement facts|^serving size|^servings per container|^amount per serving|^% ?daily value|^other ingredients|^daily value/i.test(line))continue;const match=line.match(/^(.+?)\s+([\d,]+(?:\.\d+)?)\s*(mcg|μg|µg|mg|g|IU|mL)\b/i);if(match){const amt=Number(match[2].replace(/,/g,'')),unit=match[3].replace(/μg|µg/gi,'mcg');if(amt>=0&&Number.isFinite(amt)&&IMPORT_UNITS.includes(unit))nutrients.push({name:match[1].trim(),amount:amt,unit});else unmatched.push(line)}else unmatched.push(line)}if(!nutrients.length)throw Error('No recognizable nutrient rows. Use format: Magnesium (as glycinate) 360 mg');return {items:[{id:importedId(),name:name.trim(),brand:brand.trim(),type:'neutral',nutrients}],warnings:unmatched.map(x=>'Not parsed: '+x)}}
+function renderImportPreview(items,warnings=[]){pendingImports=items;$('importPreview').classList.remove('hidden');$('importCards').innerHTML=items.map((s,i)=>`<div class="import-review" data-import="${i}"><div class="import-head"><input data-field="name" aria-label="Supplement name" value="${esc(s.name)}"><input data-field="brand" aria-label="Brand" value="${esc(s.brand)}"><select data-field="type" aria-label="Methylation type"><option value="neutral" ${s.type==='neutral'?'selected':''}>Other</option><option value="methylfree" ${s.type==='methylfree'?'selected':''}>Methyl-free</option><option value="methylated" ${s.type==='methylated'?'selected':''}>Methylated</option></select></div><div class="import-nutrients">${s.nutrients.map(n=>importRow(n)).join('')}</div><button data-add-row>Add ingredient row</button></div>`).join('');$('importCards').querySelectorAll('[data-add-row]').forEach(b=>b.onclick=()=>b.parentElement.querySelector('.import-nutrients').insertAdjacentHTML('beforeend',importRow({name:'',amount:0,unit:'mg'})));importMsg(`${items.length} supplement(s) ready for review. ${warnings.length?warnings.slice(0,12).join(' | '):'No skipped rows.'}`)}
+function importRow(n){return `<div class="import-nrow"><input aria-label="Ingredient name" data-n="name" value="${esc(n.name)}"><input aria-label="Amount" data-n="amount" type="number" min="0" step="any" value="${esc(n.amount)}"><select aria-label="Unit" data-n="unit">${IMPORT_UNITS.map(u=>`<option value="${u}" ${u===n.unit?'selected':''}>${u}</option>`).join('')}</select><button type="button" data-rm title="Remove ingredient">×</button></div>`}
+function handleImportRemove(e){if(e.target.matches('[data-rm]'))e.target.closest('.import-nrow').remove()}
+$('importCards').addEventListener('click',handleImportRemove);
+$('parseFacts').onclick=()=>{try{const x=pastedFacts($('importFacts').value,$('importName').value,$('importBrand').value);renderImportPreview(x.items,x.warnings)}catch(e){importMsg('Error: '+e.message)}};
+$('parseSheet').onclick=async()=>{const file=$('importSheet').files[0];if(!file){importMsg('Choose a CSV or XLSX file');return}if(file.size>2_000_000){importMsg('File exceeds 2 MB');return}try{let rows;if(/\.csv$/i.test(file.name)){rows=csvParse((await file.text()).replace(/^\uFEFF/,''))}else if(/\.xlsx$/i.test(file.name)){throw Error('XLSX import requires conversion to CSV for GitHub Pages'); const resp=await fetch('/api/import-xlsx',{method:'POST',headers:{'X-Ledger-Request':'1','Content-Type':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'},credentials:'same-origin',body:await file.arrayBuffer()});const result=await resp.json();if(!resp.ok)throw Error(result.error||'Excel import failed');rows=result.rows}else throw Error('Choose .csv or .xlsx');const x=readImportRows(rows);renderImportPreview(x.items,x.warnings)}catch(e){importMsg('Error: '+e.message)}};
+$('saveImports').onclick=()=>{try{const candidates=[...$('importCards').querySelectorAll('[data-import]')].map(box=>{const name=box.querySelector('[data-field="name"]').value.trim(),brand=box.querySelector('[data-field="brand"]').value.trim(),type=box.querySelector('[data-field="type"]').value;const nutrients=[...box.querySelectorAll('.import-nrow')].map(r=>({name:r.querySelector('[data-n="name"]').value.trim(),amount:Number(r.querySelector('[data-n="amount"]').value),unit:r.querySelector('[data-n="unit"]').value}));if(!name||!nutrients.length||nutrients.some(n=>!n.name||!Number.isFinite(n.amount)||n.amount<0||!IMPORT_UNITS.includes(n.unit)))throw Error('Every supplement needs a name and valid nutrient rows');return {id:importedId(),name,brand,type,status:'active',nutrients}});let added=0,skipped=0;const seen=new Set(supplements.map(s=>(s.brand+'|'+s.name).toLowerCase()));for(const item of candidates){const key=(item.brand+'|'+item.name).toLowerCase();if(seen.has(key)){skipped++;continue}seen.add(key);supplements.push(item);added++}if(added){save();render();if(!$('libraryBox').classList.contains('hidden'))showLibrary()}$('importPreview').classList.add('hidden');pendingImports=[];importMsg(`${added} added. ${skipped} duplicate(s) skipped. ${added?'Saving to NAS…':''}`)}catch(e){importMsg('Error: '+e.message)}};
+$('cancelImports').onclick=()=>{$('importPreview').classList.add('hidden');pendingImports=[];importMsg('Import cancelled; nothing added')};
+$('importTemplate').onclick=()=>download('supplement-import-template.csv',csvData([['Supplement','Brand','Nutrient','Amount','Unit','Type'],['Example Magnesium','Example Brand','Magnesium (as glycinate)',360,'mg','neutral'],['Example Magnesium','Example Brand','Vitamin D3',25,'mcg','neutral']]),'text/csv;charset=utf-8');
+
+$('date').onchange=e=>setDate(e.target.value);$('prev').onclick=()=>shift(-1);$('next').onclick=()=>shift(1);function shift(n){const [y,m,d]=date.split('-').map(Number),v=new Date(y,m-1,d+n);setDate(`${v.getFullYear()}-${String(v.getMonth()+1).padStart(2,'0')}-${String(v.getDate()).padStart(2,'0')}`)}
+$('allOff').onclick=()=>{if(confirm('Clear all supplements for '+date+'?')){logs[date]={};delete snapshots[date];save();render()}};
+$('export').onclick=()=>download('supplement-ledger-backup-'+initialDate()+'.json',JSON.stringify({version:4,supplements,logs,snapshots,favorites,routines},null,2),'application/json');
+// CSV exports use the same normalized nutrient calculations as the on-screen totals.
+// The detail export preserves each supplement's original nutrient label and unit.
+function csvEscape(v){
+  const value=String(v??'');
+  // Protect spreadsheet users from executing a formula embedded in an edited nutrient name.
+  const safe=/^[\s]*[=+@]/.test(value)||/^[\t\r\n]/.test(value)?"'"+value:value;
+  return '"'+safe.replaceAll('"','""')+'"';
+}
+function csvData(rows){return '\uFEFF'+rows.map(r=>r.map(csvEscape).join(',')).join('\r\n')+'\r\n'}
+function nutrientDetailRows(){
+  const rows=[['Date','Supplement','Brand','Supplement ID','Servings','Nutrient category','Nutrient (original label)','Combined nutrient name','Per-serving amount','Per-serving unit','Calculated amount','Calculated unit']];
+  for(const [date,items] of Object.entries(logs).sort()){
+    for(const [id,rawServings] of Object.entries(items||{})){
+      const s=snapshotFor(date,id), servings=Number(rawServings);
+      if(!s||!Number.isFinite(servings)||servings<=0)continue;
+      const nutrients=s.nutrients||[];
+      if(!nutrients.length)rows.push([date,s.name,s.brand||'',id,servings,'','','','','','','']);
+      for(const n of nutrients){
+        const amount=Number(n.amount),name=normName(n.name);
+        if(!Number.isFinite(amount))continue;
+        rows.push([date,s.name,s.brand||'',id,servings,groupFor(name),n.name,name,amount,n.unit,Number((amount*servings).toPrecision(12)),n.unit]);
+      }
+    }
+  }
+  return rows;
+}
+function dailyTotalRows(){
+  const rows=[['Date','Nutrient category','Combined nutrient name','Total amount','Unit','Display total','Sources']];
+  for(const [date,items] of Object.entries(logs).sort()){
+    for(const r of calc(items||{},date).sort((a,b)=>groupFor(a.name).localeCompare(groupFor(b.name))||a.name.localeCompare(b.name))){
+      rows.push([date,groupFor(r.name),r.name,Number(r.amount.toPrecision(12)),r.unit,display(r),r.sources.join(' | ')]);
+    }
+  }
+  return rows;
+}
+$('csv').onclick=()=>download('supplement-nutrient-details.csv',csvData(nutrientDetailRows()),'text/csv;charset=utf-8');
+$('csvTotals').onclick=()=>download('supplement-daily-nutrient-totals.csv',csvData(dailyTotalRows()),'text/csv;charset=utf-8');
+$('restore').onclick=()=>$('file').click();$('file').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const x=JSON.parse(await file.text());if(!Array.isArray(x.supplements)||!x.logs||typeof x.logs!=='object')throw Error('Not a supported backup');if(!confirm('Restore this backup into your cloud account? It replaces the current cloud library and logs.'))return;supplements=x.supplements;logs=x.logs;snapshots=x.snapshots&&typeof x.snapshots==='object'?x.snapshots:{};favorites=Array.isArray(x.favorites)?x.favorites:[];routines=Array.isArray(x.routines)?x.routines:[];ensureStatuses();await save();render();renderRoutines();$('status').textContent=saveBlocked?'Backup NOT saved — check error':'Backup restored to cloud'}catch(err){alert('Restore failed: '+err.message)}e.target.value=''};
+$('editLibrary').onclick=()=>{showTab('library');$('libraryBox').classList.remove('hidden');showLibrary()};function showLibrary(){const sel=$('librarySelect');const old=sel.value;sel.innerHTML=supplements.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');if(supplements.some(s=>s.id===old))sel.value=old;loadLibrary();renderLibraryCards()}
+function renderLibraryCards(){const host=$('libraryCards');if(!host)return;const term=($('librarySearch')?.value||'').trim().toLowerCase();const rows=supplements.filter(s=>(s.name+' '+(s.brand||'')).toLowerCase().includes(term)).sort((a,b)=>a.name.localeCompare(b.name));host.innerHTML=rows.map(s=>`<div class="supp" style="display:flex;flex-direction:column;gap:9px"><strong>${esc(s.name)}</strong><span class="brand">${esc(s.brand||'No brand')}</span><span class="note">Status: ${esc(s.status||'active')}</span><button type="button" data-library-pick="${esc(s.id)}">Select to edit</button></div>`).join('')||'<p class="note">No supplements match your search.</p>';host.querySelectorAll('[data-library-pick]').forEach(btn=>btn.onclick=()=>{const sel=$('librarySelect');sel.value=btn.dataset.libraryPick;loadLibrary();$('libraryJson').scrollIntoView({behavior:'smooth',block:'center'})})}
+$('librarySearch').addEventListener('input',renderLibraryCards);;function loadLibrary(){const s=supplements.find(s=>s.id===$('librarySelect').value)||{};$('libraryJson').value=JSON.stringify(s,null,2);$('libraryStatus').value=s.status||'active'}$('librarySelect').onchange=loadLibrary;$('libraryStatus').onchange=()=>{const id=$('librarySelect').value,s=supplements.find(x=>x.id===id);if(!s)return;s.status=$('libraryStatus').value;save();render();loadLibrary()};
+$('saveLibrary').onclick=()=>{try{const s=JSON.parse($('libraryJson').value);if(typeof s.name!=='string'||!s.name.trim()||!Array.isArray(s.nutrients)||!s.nutrients.every(n=>typeof n.name==='string'&&Number.isFinite(Number(n.amount))&&n.unit))throw Error('Provide name and valid nutrients (name, numeric amount, unit).');s.id=s.id||('custom_'+Date.now());s.status=$('libraryStatus').value;const i=supplements.findIndex(x=>x.id===$('librarySelect').value);if(i>=0)supplements[i]=s;else supplements.push(s);save();render();showLibrary();$('librarySelect').value=s.id;$('status').textContent='Library saved'}catch(e){alert('Invalid supplement: '+e.message)}};$('addLibrary').onclick=()=>{$('libraryJson').value=JSON.stringify({id:'custom_'+Date.now(),name:'New supplement',brand:'',type:'neutral',nutrients:[{name:'Nutrient',amount:0,unit:'mg'}]},null,2);$('librarySelect').value='';$('libraryStatus').value='active'};$('removeLibrary').onclick=()=>{const id=$('librarySelect').value;if(!id||!confirm('Archive this supplement as inactive? Historical entries will be retained.'))return;{const s=supplements.find(s=>s.id===id);if(s)s.status='inactive';}save();render();showLibrary()};
+
+// V4 navigation and convenience features. Existing storage and historical snapshots remain authoritative.
+let activeTab='today',activeGroup='all';
+function showTab(tab){if(!['today','analysis','history','library'].includes(tab))return;activeTab=tab;document.querySelectorAll('#tabContent>.view').forEach(v=>v.classList.toggle('hidden',v.id!=='view-'+tab));document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));if(tab==='history')renderTrend();if(tab==='analysis')renderAnalysisFilter();if(tab==='library')showLibrary();window.scrollTo({top:0,behavior:'instant'})}
+function initV4(){const place={today:['dateSection','todaySection','routinePanel'],analysis:['analysisSection'],history:['chartPanel','historySection'],library:['libraryBox','importBox']};for(const [tab,ids] of Object.entries(place)){for(const id of ids){const el=$(id);if(el) $('view-'+tab).appendChild(el)}}$('libraryBox').classList.remove('hidden');document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));document.querySelectorAll('[data-group]').forEach(b=>b.onclick=()=>{activeGroup=b.dataset.group;renderAnalysisFilter()});$('saveRoutine').onclick=saveRoutineFromDay;$('trendMetric').onchange=renderTrend;$('trendNutrient').onchange=renderTrend;$('trendRange').onchange=renderTrend;showTab('today')}
+function renderAnalysisFilter(){document.querySelectorAll('[data-group]').forEach(b=>b.classList.toggle('primary',b.dataset.group===activeGroup));const elems=[...$('nutrients').children];let visible=true;for(const el of elems){if(el.classList.contains('group-title')){const g=el.textContent.split(' ·')[0];visible=activeGroup==='all'||g===activeGroup||(activeGroup==='amino'&&/amino|BCAA/i.test(g))||(activeGroup==='other'&&!/^(Vitamins|Minerals|Protein & macronutrients|BCAAs|Other essential amino acids|Other amino acids)/.test(g));}el.style.display=visible?'':'none'}}
+function saveRoutineFromDay(){const name=$('routineName').value.trim();if(!name){alert('Name your routine first');return}const entries=Object.fromEntries(Object.entries(day()).filter(([id,v])=>Number(v)>0&&supplements.some(s=>s.id===id&&s.status==='active')));if(!Object.keys(entries).length){alert('Select active supplements to create a routine');return}const old=routines.findIndex(r=>r.name.toLowerCase()===name.toLowerCase());if(old>=0&&!confirm('Replace existing routine '+name+'?'))return;const item={id:old>=0?routines[old].id:'routine_'+Date.now(),name,entries};if(old>=0)routines[old]=item;else routines.push(item);save();renderRoutines();$('routineName').value=''}
+function renderRoutines(){if(!$('routineList'))return;$('routineList').innerHTML=routines.map(r=>`<div class="routine-item"><span><strong>${esc(r.name)}</strong><small> · ${Object.keys(r.entries||{}).length} products</small></span><span class="bar"><button data-apply="${esc(r.id)}">Apply</button><button data-drop="${esc(r.id)}">Remove</button></span></div>`).join('')||'<p class="note">No saved routines yet. Check your supplements, then save the day as a routine.</p>';$('routineList').querySelectorAll('[data-apply]').forEach(b=>b.onclick=()=>{const r=routines.find(x=>x.id===b.dataset.apply);if(!r)return;if(!confirm('Replace the logged entries for '+date+' with routine "'+r.name+'"?'))return;const valid=Object.fromEntries(Object.entries(r.entries).filter(([id,v])=>supplements.some(s=>s.id===id&&s.status==='active')&&Number(v)>0));logs[date]={...valid};snapshots[date]={};for(const id of Object.keys(valid))freezeSnapshot(date,id);save();render();refreshV4()});$('routineList').querySelectorAll('[data-drop]').forEach(b=>b.onclick=()=>{if(!confirm('Remove this saved routine?'))return;routines=routines.filter(x=>x.id!==b.dataset.drop);save();renderRoutines()})}
+function trendData(){const days=Object.keys(logs).filter(d=>Object.values(logs[d]||{}).some(v=>Number(v)>0)).sort();const n=$('trendRange').value==='all'?days.length:Number($('trendRange').value);return days.slice(-n).map(d=>({date:d,count:logProductIds(logs[d]).length,values:calc(logs[d],d)}))}
+function renderTrend(){if(!$('trendChart'))return;const all=trendData(),isN=$('trendMetric').value==='nutrient';$('trendNutrientLabel').classList.toggle('hidden',!isN);const select=$('trendNutrient'),old=select.value,names=[...new Set(Object.keys(logs).flatMap(d=>calc(logs[d],d).map(r=>r.name)))].sort();select.innerHTML=names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');if(names.includes(old))select.value=old;const metric=select.value;const values=all.map(x=>({date:x.date,value:isN?x.values.filter(r=>r.name===metric).reduce((sum,r)=>sum+r.amount,0):x.count}));if(!values.length){$('trendChart').innerHTML='<p class="muted">Log some days to see trends.</p>';$('trendTable').innerHTML='';return}const w=680,h=230,left=48,right=16,top=14,bottom=38,max=Math.max(...values.map(v=>v.value),1),xp=i=>left+(values.length<2?(w-left-right)/2:i*(w-left-right)/(values.length-1)),yp=v=>top+(h-top-bottom)*(1-v/max),points=values.map((v,i)=>xp(i).toFixed(1)+','+yp(v.value).toFixed(1)).join(' ');const grid=[0,.25,.5,.75,1].map(t=>`<line class="gridline" x1="${left}" x2="${w-right}" y1="${yp(t*max)}" y2="${yp(t*max)}"/><text x="4" y="${yp(t*max)+4}">${fmt(t*max)}</text>`).join('');$('trendChart').innerHTML=`<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${isN?'Nutrient total':'Logged supplement count'} for ${values.length} recorded dates">${grid}<polyline class="plotline" points="${points}"/>${values.map((v,i)=>`<circle cx="${xp(i)}" cy="${yp(v.value)}" r="3"><title>${v.date}: ${fmt(v.value)}</title></circle>`).join('')}<text x="${left}" y="${h-9}">${values[0].date}</text><text text-anchor="end" x="${w-right}" y="${h-9}">${values.at(-1).date}</text></svg>`;$('trendTable').className='trend-table';$('trendTable').innerHTML=values.slice().reverse().map(v=>`<div><span>${v.date}</span><span>${fmt(v.value)}${isN?' (stored calculation unit)':' supplements'}</span></div>`).join('')}
+function refreshV4(){renderAnalysisFilter();renderTrend();renderRoutines()}
+initV4();
+
+$('cloudSignout').onclick=async e=>{e.preventDefault();const db=await cloudClient();await db.auth.signOut();location.reload()};
+(async()=>{if(await read()){setDate(initialDate());refreshV4()}})();
+</script></body></html>
