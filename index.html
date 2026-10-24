@@ -3,6 +3,17 @@
 .import-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.import-grid label{display:block;color:var(--muted);font-size:13px;margin:10px 0 5px}.import-grid input[type=text],.import-grid input[type=file],.import-grid textarea{width:100%;max-width:100%;background:#101D30;color:#F2F7FF;border:1px solid #577399;border-radius:8px;padding:10px}.import-grid textarea{height:200px;resize:vertical}.import-review{border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0}.import-review input,.import-review select{max-width:100%}.import-head{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:8px}.import-nrow{display:grid;grid-template-columns:minmax(120px,3fr) minmax(75px,1fr) minmax(68px,1fr) auto;gap:7px;margin:6px 0}.import-nrow input[type=text],.import-nrow input[type=number],.import-nrow select{width:100%;background:#101D30;color:#fff;border:1px solid #577399;padding:7px}.import-nrow button{padding:6px 9px}@media(max-width:650px){.import-grid{grid-template-columns:1fr}.import-head{grid-template-columns:1fr}.import-nrow{grid-template-columns:1fr 90px 75px auto}}
 </style><style>
 .main-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;position:sticky;top:0;z-index:20;background:#0B1220;padding:10px 0;border-bottom:1px solid #314561}.main-tabs button{min-width:0;padding:12px 5px}.main-tabs button[aria-current=page]{background:#38BDF8;color:#061624;font-weight:700}.view.hidden{display:none!important}.view>.box{margin-top:12px}.fav{float:right;background:transparent;border:0;color:#B8C7DB;font-size:25px;padding:2px 8px}.fav.on{color:#A3E635}#routineName{background:#101D30;border:1px solid #577399;color:white;padding:10px;max-width:100%;flex:1}.routine-item{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid #314561;padding:10px 0;flex-wrap:wrap}.trend-chart svg{width:100%;height:auto;display:block}.trend-chart{overflow-x:auto}.trend-chart .gridline{stroke:#314561;stroke-width:1}.trend-chart .plotline{stroke:#38BDF8;stroke-width:3;fill:none;stroke-linejoin:round}.trend-chart circle{fill:#A3E635}.trend-chart text{fill:#B8C7DB;font-size:11px}.trend-chart .axis{stroke:#8195AF}.trend-table{max-height:180px;overflow-y:auto;margin-top:8px;font-size:13px}.trend-table div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #314561}#analysisFilters button{font-size:12px}.hidden{display:none!important}@media(max-width:540px){.wrap{padding:12px 12px 85px}.box{padding:12px}.main-tabs button{font-size:12px}.supp{padding:10px}.grid{grid-template-columns:1fr!important}.stats{gap:6px}.stat{min-width:0}}
+</style><style>
+.calendar-date{cursor:pointer;min-width:145px;touch-action:manipulation}
+.calendar-popup{position:fixed;z-index:9999;width:min(330px,calc(100vw - 24px));padding:14px;background:#18263C;border:1px solid #577399;border-radius:14px;box-shadow:0 12px 35px #0009;color:#F2F7FF}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
+.calendar-head button{padding:6px 12px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.calendar-grid button{padding:10px 0;border:0;background:transparent;text-align:center}
+.calendar-grid button.selected{background:#38BDF8;color:#061624;font-weight:700}
+.calendar-grid button.today{outline:1px solid #A3E635}
+.calendar-grid .weekday{text-align:center;color:#B8C7DB;font-size:12px;padding:5px 0}
+.calendar-grid button:focus-visible{outline:2px solid #A3E635}
 </style></head><body><div class="wrap"><header><div class="muted" style="letter-spacing:.15em;font-size:12px">DAILY WELLNESS TRACKER</div><h1>Supplement Ledger</h1><p class="muted">Choose what you took, adjust servings, and review your nutrients by type. Daily history securely stored in Supabase.</p><div style="margin-top:10px"><a href="#" id="cloudSignout">Sign out</a></div></header><nav id="mainTabs" class="main-tabs" aria-label="Main navigation"><button type="button" data-tab="today" aria-current="page">✓ Today</button><button type="button" data-tab="analysis">◉ Analysis</button><button type="button" data-tab="history">▥ History</button><button type="button" data-tab="water">💧 Water</button><button type="button" data-tab="library">▤ Library</button></nav><main id="tabContent"><div id="view-today" class="view"></div><div id="view-analysis" class="view hidden"></div><div id="view-history" class="view hidden"></div><div id="view-water" class="view hidden"><section class="box"><div class="top"><h2>💧 Hydration tracker</h2><label>Date <input type="date" id="waterDate"></label></div><p class="muted">Log water and other drinks in US fluid ounces. All beverages count toward fluid intake; amounts are not adjusted by arbitrary hydration percentages.</p><div style="text-align:center;padding:16px"><div id="waterGauge" style="margin:auto;width:180px;height:180px;border-radius:50%;background:conic-gradient(#38bdf8 0%,#17304b 0%);display:grid;place-items:center"><div style="border-radius:50%;width:146px;height:146px;background:#101d30;display:flex;flex-direction:column;align-items:center;justify-content:center"><strong style="font-size:28px" id="waterTotal">0 oz</strong><small id="waterPercent">0% of goal</small></div></div><p id="waterRemaining"></p></div><div class="bar"><label>Daily goal (fl oz) <input type="number" id="waterGoal" min="8" max="338" step="1" style="width:100px"></label></div><div class="bar" style="margin:14px 0"><label>Drink type <select id="waterType"><option value="Water">💧 Water</option><option value="Sparkling water">🫧 Sparkling water</option><option value="Electrolyte drink">⚡ Electrolyte drink</option><option value="Coffee">☕ Coffee</option><option value="Tea">🍵 Tea</option><option value="Protein shake">🥤 Protein shake</option><option value="Milk">🥛 Milk</option><option value="Juice">🍊 Juice</option><option value="Soda">🥤 Soda</option><option value="Sports drink">🏃 Sports drink</option><option value="Other">Other drink</option></select></label><label id="waterOtherLabel" class="hidden">Drink name <input type="text" id="waterOther" maxlength="45" placeholder="e.g. Lemonade"></label></div><div class="bar" style="margin:16px 0"><button type="button" data-water-add="8">+8 oz</button><button type="button" data-water-add="12">+12 oz</button><button type="button" data-water-add="16">+16 oz</button><button type="button" data-water-add="24">+24 oz</button><label>Custom fl oz <input type="number" id="waterCustom" min="0.5" max="101" step="0.5" value="20" style="width:90px"></label><button type="button" class="primary" id="waterCustomAdd">Add drink</button></div><div class="box" style="margin:14px 0;background:#101d30"><div class="top"><h2>⭐ Favorite drinks</h2><button type="button" id="waterFavoriteSave">Save selected drink + size</button></div><p class="muted">Tap a favorite to log it instantly. Example: select Protein shake, 14 fl oz, then save it as "Fairlife Core Power Elite".</p><div class="bar" id="waterFavorites"></div></div><h2>Drink entries</h2><div id="waterEntries"></div></section><section class="box"><h2>Last 14 days</h2><div id="waterHistory"></div></section></div><div id="view-library" class="view hidden"></div></main>
 <section class="box" id="dateSection"><div class="top"><label>Log date <input id="date" type="date"></label><span id="status">Loading…</span></div><div class="stats" style="margin-top:14px"><div class="stat"><b id="count">0</b><small>Supplements</small></div><div class="stat"><b id="entries">0</b><small>Nutrients</small></div><div class="stat"><b id="daycount">0</b><small>Logged days</small></div></div></section>
 <section class="box" id="todaySection"><div class="top"><h2>Today's supplements</h2><div class="actions"><button id="allOff">Clear day</button><button id="editLibrary">Edit library</button></div></div><div id="supplements" class="grid"></div><div id="inactiveLogged" class="hidden" style="margin-top:16px"></div></section>
@@ -1554,4 +1565,49 @@ initV4();initWater();
 
 $('cloudSignout').onclick=async e=>{e.preventDefault();const db=await cloudClient();await db.auth.signOut();location.reload()};
 (async()=>{if(await read()){setDate(initialDate());refreshV4()}})();
+</script><script>
+(function(){
+  const ids=['date','waterDate'];
+  const isoToday=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+  let active=null,month=new Date(),popup=null;
+  const valid=v=>/^\\d{4}-\\d{2}-\\d{2}$/.test(v||'');
+  function format(v){if(!valid(v))return '';const [y,m,d]=v.split('-');return m+'/'+d+'/'+y}
+  function position(){if(!active||!popup)return;const r=active.getBoundingClientRect(),w=330;popup.style.left=Math.max(12,Math.min(r.left,innerWidth-w-12))+'px';popup.style.top=(r.bottom+350>innerHeight?Math.max(12,r.top-350):r.bottom+6)+'px'}
+  function close(){popup?.remove();popup=null;active=null}
+  function draw(){
+    if(!popup||!active)return;
+    const year=month.getFullYear(),mon=month.getMonth(),selected=active.dataset.iso||isoToday();
+    popup.replaceChildren();
+    const head=document.createElement('div');head.className='calendar-head';
+    const prev=document.createElement('button');prev.type='button';prev.textContent='‹';prev.setAttribute('aria-label','Previous month');prev.onclick=()=>{month.setMonth(month.getMonth()-1);draw()};
+    const title=document.createElement('strong');title.textContent=month.toLocaleDateString(undefined,{month:'long',year:'numeric'});
+    const next=document.createElement('button');next.type='button';next.textContent='›';next.setAttribute('aria-label','Next month');next.onclick=()=>{month.setMonth(month.getMonth()+1);draw()};
+    head.append(prev,title,next);popup.append(head);
+    const grid=document.createElement('div');grid.className='calendar-grid';
+    ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(day=>{const el=document.createElement('span');el.className='weekday';el.textContent=day;grid.append(el)});
+    const first=new Date(year,mon,1).getDay(),days=new Date(year,mon+1,0).getDate();
+    for(let i=0;i<first;i++)grid.append(document.createElement('span'));
+    for(let d=1;d<=days;d++){
+      const value=[year,String(mon+1).padStart(2,'0'),String(d).padStart(2,'0')].join('-');
+      const b=document.createElement('button');b.type='button';b.textContent=d;b.setAttribute('aria-label',value);
+      if(value===selected)b.classList.add('selected');
+      if(value===isoToday())b.classList.add('today');
+      b.onclick=()=>{active.value=value;active.dataset.iso=value;active.dispatchEvent(new Event('input',{bubbles:true}));active.dispatchEvent(new Event('change',{bubbles:true}));close()};
+      grid.append(b);
+    }
+    popup.append(grid);position();
+  }
+  function open(input){if(active===input){close();return}close();active=input;const v=valid(input.value)?input.value:isoToday();const [y,m]=v.split('-').map(Number);month=new Date(y,m-1,1);popup=document.createElement('div');popup.className='calendar-popup';popup.setAttribute('role','dialog');popup.setAttribute('aria-label','Choose date');document.body.append(popup);draw()}
+  function init(){
+    for(const id of ids){const el=document.getElementById(id);if(!el)continue;
+      el.type='text';el.readOnly=true;el.classList.add('calendar-date');el.placeholder='MM/DD/YYYY';el.setAttribute('aria-label','Choose date from calendar');
+      el.addEventListener('click',()=>open(el));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(el)}});
+    }
+    document.addEventListener('pointerdown',e=>{if(popup&&!popup.contains(e.target)&&e.target!==active)close()});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+    window.addEventListener('resize',position);window.addEventListener('scroll',position,true);
+  }
+  // Retain ISO values for existing storage and event handlers; only selection UI changes.
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
 </script></body></html>
